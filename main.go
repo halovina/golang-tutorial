@@ -2,19 +2,29 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"os"
 
 	"github.com/go-gota/gota/dataframe"
 )
 
 func main() {
-	df := dataframe.LoadRecords(
-		[][]string{
-			{"A", "B", "C", "D"},
-			{"a", "4", "5.1", "true"},
-			{"k", "5", "7.0", "true"},
-			{"k", "4", "6.0", "true"},
-			{"a", "2", "7.1", "false"},
-		},
-	)
-	fmt.Println(df)
+	file, err := os.Open("example-sheet.csv")
+
+	defer file.Close()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	dataFrame := dataframe.ReadCSV(file)
+	fmt.Println(dataFrame)
+
+	// select row
+	// row := dataFrame.Subset([]int{0, 2})
+	// fmt.Println(row)
+
+	// select column
+	column := dataFrame.Select([]string{"kecamatan", "provinsi"})
+	fmt.Println(column)
 }
